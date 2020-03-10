@@ -1,1 +1,1 @@
-# LuisOviedo04-LuisOviedo04-Parcial-Arqs-de-Software
+# Parcial-Arqs-de-Software
