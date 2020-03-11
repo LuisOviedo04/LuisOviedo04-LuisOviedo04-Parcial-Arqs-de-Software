@@ -21,12 +21,12 @@ class SQL:
         self.MySQL = mysql
 
     def Create_table(self):
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS info ( info JSON NOT NULL )")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS info ( info JSON NOT NULL )")
     
     def Insert_data(self):
-        self.cursor.execute("INSERT INTO info  VALUES (%s)",(self.Json,) )
-        self.mysql.connection.commit()
-        self.cursor.close()
+        self.cur.execute("INSERT INTO info  VALUES (%s)",(self.Json,) )
+        self.MySQL.connection.commit()
+        self.cur.close()
 
 class Redis:
     def __init__(self, host, jfile):
@@ -64,9 +64,10 @@ def app():
                 ConexSQLDB = SQL(mysql.connection.cursor(), Json  ,mysql)
                 ConexSQLDB.Create_table()
                 ConexSQLDB.Insert_data()
-
+            
                 ConexRedis = Redis("redis", Json)
                 ConexRedis.Insert_data()
+            
         return render_template("input.html")
 
     @app.route("/iot", methods=['GET', 'POST'])
@@ -75,12 +76,13 @@ def app():
         if(request.method=='POST' and ata):
             data = json.dumps(ata)
 
-            conecSQL = ConexionSQL( mysql.connection.cursor(), data  ,mysql )
+            conecSQL = SQL( mysql.connection.cursor(), data  ,mysql )
             conecSQL.Create_table()
             conecSQL.Insert_data()
-
-            conecRedis = ConexionRedis("redis",data)
+            
+            conecRedis = Redis("redis",data)
             conecRedis.Insert_data()
-            return data    
+            return data  
+              
     
     return app
